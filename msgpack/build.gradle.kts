@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    kotlin("plugin.serialization") version "1.4.10"
 }
 
 android {
@@ -36,8 +37,8 @@ android {
 
 dependencies {
     implementation("androidx.core:core-ktx:1.3.2")
-    implementation("androidx.appcompat:appcompat:1.2.0")
 
+    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
     implementation("org.msgpack:msgpack-core:0.8.21")
 
     testImplementation("junit:junit:4.13.1")

@@ -12,12 +12,20 @@ import kotlin.reflect.full.createType
 
 abstract class BaseTest {
 
-    private val jackson = ObjectMapper(MessagePackFactory())
-        .enable(SerializationFeature.WRITE_ENUMS_USING_INDEX)
-        .registerKotlinModule()
-    private val messagePack = MessagePack.Default
+    protected fun <T> runTest(testData: T, clazz: KClass<*>, config: MessagePackConf? = null) {
 
-    protected fun <T> runTest(testData: T, clazz: KClass<*>) {
+        val messagePack = if (config == null) {
+            MessagePack.Default
+        } else {
+            MessagePack(config)
+        }
+        val jackson = ObjectMapper(MessagePackFactory()).registerKotlinModule()
+        if (!messagePack.configuration.encodeEnumsAsStrings) {
+            jackson.enable(SerializationFeature.WRITE_ENUMS_USING_INDEX)
+        }
+
+        println("-------------")
+
         val actualEncoded =
             messagePack.encodeToByteArray(
                 messagePack.serializersModule.serializer(clazz.createType()),

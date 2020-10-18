@@ -50,10 +50,11 @@ internal class MessagePackEncoder(
 
     override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
         if (configuration.encodeEnumsAsStrings) {
-            logger.log("encodeEnum: ${enumDescriptor.getElementName(index)}")
-            packer.packString(enumDescriptor.getElementName(index))
+            val enumName = enumDescriptor.getElementName(index)
+            logger.log("encodeEnum (string): $enumName")
+            packer.packString(enumName)
         } else {
-            logger.log("encodeEnum: $index")
+            logger.log("encodeEnum (index): $index")
             packer.packInt(index)
         }
     }

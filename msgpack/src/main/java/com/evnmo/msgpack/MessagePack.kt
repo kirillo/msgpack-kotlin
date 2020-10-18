@@ -9,7 +9,7 @@ import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.modules.SerializersModule
 
 @ExperimentalSerializationApi
-sealed class MessagePack(private val configuration: MessagePackConf) : BinaryFormat {
+open class MessagePack(val configuration: MessagePackConf) : BinaryFormat {
 
     override val serializersModule: SerializersModule
         get() = configuration.serializersModule

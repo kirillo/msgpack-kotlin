@@ -40,9 +40,7 @@ kotlin {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.3.2")
-
-    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
+    api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0")
     implementation("org.msgpack:msgpack-core:0.8.21")
 
     testImplementation("org.msgpack:jackson-dataformat-msgpack:0.8.21")

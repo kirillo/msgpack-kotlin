@@ -5,6 +5,7 @@ import com.evnmo.msgpack.MessagePackConf
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.StructureKind
+import kotlinx.serialization.descriptors.elementNames
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import org.msgpack.core.MessageUnpacker
@@ -54,8 +55,7 @@ internal class MessagePackDecoder(
     override fun decodeEnum(enumDescriptor: SerialDescriptor): Int {
         return if (configuration.encodeEnumsAsStrings) {
             val enumAsString = unpacker.unpackString()
-            // TODO if the enum comes as string
-            return 0
+            enumDescriptor.elementNames.indexOf(enumAsString)
         } else {
             unpacker.unpackInt()
         }.apply {

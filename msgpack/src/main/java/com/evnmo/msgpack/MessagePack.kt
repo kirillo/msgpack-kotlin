@@ -9,12 +9,12 @@ import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.modules.SerializersModule
 
 @ExperimentalSerializationApi
-open class MessagePack(val configuration: MessagePackConf) : BinaryFormat {
+public open class MessagePack(public val configuration: MessagePackConf) : BinaryFormat {
 
     override val serializersModule: SerializersModule
         get() = configuration.serializersModule
 
-    companion object Default : MessagePack(MessagePackConf())
+    public companion object Default : MessagePack(MessagePackConf())
 
     override fun <T> decodeFromByteArray(
         deserializer: DeserializationStrategy<T>,

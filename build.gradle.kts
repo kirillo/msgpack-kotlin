@@ -1,5 +1,5 @@
 buildscript {
-    val kotlinVersion = "1.4.10"
+    val kotlinVersion by extra("1.4.10")
 
     repositories {
         maven { url = uri("https://jitpack.io") }

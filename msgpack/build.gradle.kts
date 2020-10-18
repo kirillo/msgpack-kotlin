@@ -1,6 +1,6 @@
 plugins {
     id("kotlin")
-    kotlin("plugin.serialization") version "1.4.10"
+    kotlin("plugin.serialization") version Versions.kotlin
 }
 
 java {
@@ -13,10 +13,10 @@ kotlin {
 }
 
 dependencies {
-    api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0")
-    implementation("org.msgpack:msgpack-core:0.8.21")
+    implementation(Libs.Kotlin.serialization)
+    implementation(Libs.MessagePack.core)
 
-    testImplementation("org.msgpack:jackson-dataformat-msgpack:0.8.21")
-    testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2")
-    testImplementation("junit:junit:4.13.1")
+    testImplementation(Libs.MessagePack.jackson)
+    testImplementation(Libs.MessagePack.kotlin)
+    testImplementation(Libs.Test.jUnit)
 }

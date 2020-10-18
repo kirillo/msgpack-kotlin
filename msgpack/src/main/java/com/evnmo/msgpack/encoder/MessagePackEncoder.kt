@@ -3,6 +3,7 @@ package com.evnmo.msgpack.encoder
 import com.evnmo.msgpack.Logger
 import com.evnmo.msgpack.MessagePackConf
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.CompositeEncoder
@@ -18,6 +19,11 @@ internal class MessagePackEncoder(
     private val logger = Logger(configuration)
 
     override val serializersModule = configuration.serializersModule
+
+    override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T) {
+        logger.log("-- encodeSerializableValue --")
+        super.encodeSerializableValue(serializer, value)
+    }
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
         logger.log("beginStructure")

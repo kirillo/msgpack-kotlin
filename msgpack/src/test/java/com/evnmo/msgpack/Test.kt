@@ -3,6 +3,7 @@ package com.evnmo.msgpack
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
@@ -55,7 +56,7 @@ class Test {
 
         assertArrayEquals(actualEncoded, expectedEncoded)
 
-//        val actualDecoded = MessagePack.Default.decodeFromByteArray<TestData>(actualEncoded)
+        val actualDecoded = MessagePack.Default.decodeFromByteArray<TestData>(actualEncoded)
         val expectedDecoded = objectMapper.readValue<TestData>(expectedEncoded)
 //
 //        assertEquals(actualDecoded, expectedDecoded)

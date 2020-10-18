@@ -4,7 +4,9 @@ import com.evnmo.msgpack.Logger
 import com.evnmo.msgpack.MessagePackConf
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.CompositeDecoder
 import org.msgpack.core.MessageUnpacker
 
@@ -79,14 +81,18 @@ internal class MessagePackCompositeDecoder(
         }
     }
 
-    @ExperimentalSerializationApi
     override fun <T : Any> decodeNullableSerializableElement(
         descriptor: SerialDescriptor,
         index: Int,
         deserializer: DeserializationStrategy<T?>,
         previousValue: T?
     ): T? {
-        TODO("Not yet implemented")
+        logger.log("decodeNullableSerializableElement")
+        return if (unpacker.tryUnpackNil()) {
+            null
+        } else {
+            decodeSerializableElement(descriptor, index, deserializer, previousValue)
+        }
     }
 
     override fun <T> decodeSerializableElement(
@@ -95,11 +101,28 @@ internal class MessagePackCompositeDecoder(
         deserializer: DeserializationStrategy<T>,
         previousValue: T?
     ): T {
-        TODO("Not yet implemented")
+        logger.log("decodeSerializableElement")
+        return deserializer.deserialize(MessagePackDecoder(unpacker, configuration))
     }
 
     override fun endStructure(descriptor: SerialDescriptor) {
         logger.log("endStructure")
+    }
+
+    override fun decodeCollectionSize(descriptor: SerialDescriptor): Int {
+        return when (descriptor.kind) {
+            is StructureKind.LIST -> {
+                if (descriptor.getElementDescriptor(0).kind == PrimitiveKind.BYTE) {
+                    unpacker.unpackBinaryHeader()
+                } else {
+                    unpacker.unpackArrayHeader()
+                }
+            }
+            is StructureKind.MAP -> {
+                unpacker.unpackMapHeader()
+            }
+            else -> -1
+        }
     }
 
     override fun decodeSequentially(): Boolean = true

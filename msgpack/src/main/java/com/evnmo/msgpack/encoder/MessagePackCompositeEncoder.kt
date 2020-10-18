@@ -69,8 +69,8 @@ internal class MessagePackCompositeEncoder(
         serializer: SerializationStrategy<T>,
         value: T?
     ) {
-        logger.log("encodeNullableSerializableElement")
         if (value == null) {
+            logger.log("encodeNullableSerializableElement")
             packer.packNil()
         } else {
             encodeSerializableElement(descriptor, index, serializer, value)
@@ -83,21 +83,6 @@ internal class MessagePackCompositeEncoder(
         serializer: SerializationStrategy<T>,
         value: T
     ) {
-        when (value) {
-            is List<*> -> {
-                logger.log("start of list, size = ${value.size}")
-                packer.packArrayHeader(value.size)
-            }
-            is Map<*, *> -> {
-                logger.log("start of map, size = ${value.size}")
-                packer.packMapHeader(value.size)
-            }
-            is ByteArray -> {
-                logger.log("start of byte array, size = ${value.size}")
-                packer.packBinaryHeader(value.size)
-            }
-        }
-
         serializer.serialize(MessagePackEncoder(packer, configuration), value)
     }
 

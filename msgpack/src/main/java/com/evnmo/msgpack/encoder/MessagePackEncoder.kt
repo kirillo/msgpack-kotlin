@@ -3,7 +3,7 @@ package com.evnmo.msgpack.encoder
 import com.evnmo.msgpack.Logger
 import com.evnmo.msgpack.MessagePackConf
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.CompositeEncoder
@@ -19,11 +19,6 @@ internal class MessagePackEncoder(
     private val logger = Logger(configuration)
 
     override val serializersModule = configuration.serializersModule
-
-    override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T) {
-        logger.log("-- encodeSerializableValue --")
-        super.encodeSerializableValue(serializer, value)
-    }
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
         logger.log("beginStructure")
@@ -91,5 +86,26 @@ internal class MessagePackEncoder(
     override fun encodeString(value: String) {
         logger.log("encodeString: $value")
         packer.packString(value)
+    }
+
+    override fun beginCollection(
+        descriptor: SerialDescriptor,
+        collectionSize: Int
+    ): CompositeEncoder {
+        when (descriptor.kind) {
+            is StructureKind.LIST -> {
+                logger.log("start of list, size = $collectionSize")
+                if (descriptor.getElementDescriptor(0).kind == PrimitiveKind.BYTE) {
+                    packer.packBinaryHeader(collectionSize)
+                } else {
+                    packer.packArrayHeader(collectionSize)
+                }
+            }
+            is StructureKind.MAP -> {
+                logger.log("start of map, size = $collectionSize")
+                packer.packMapHeader(collectionSize)
+            }
+        }
+        return MessagePackCompositeEncoder(packer, configuration)
     }
 }

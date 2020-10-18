@@ -2,9 +2,9 @@ package com.evnmo.msgpack.decoder
 
 import com.evnmo.msgpack.Logger
 import com.evnmo.msgpack.MessagePackConf
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import org.msgpack.core.MessageUnpacker
@@ -19,13 +19,10 @@ internal class MessagePackDecoder(
 
     override val serializersModule = configuration.serializersModule
 
-    override fun <T> decodeSerializableValue(deserializer: DeserializationStrategy<T>): T {
-        logger.log("-- decodeSerializableValue --")
-        return super.decodeSerializableValue(deserializer)
-    }
-
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
         logger.log("beginStructure")
+        if (descriptor.kind == StructureKind.CLASS)
+            unpacker.unpackArrayHeader()
         return MessagePackCompositeDecoder(unpacker, configuration)
     }
 
@@ -54,7 +51,15 @@ internal class MessagePackDecoder(
     }
 
     override fun decodeEnum(enumDescriptor: SerialDescriptor): Int {
-        TODO("Not yet implemented")
+        return if (configuration.encodeEnumsAsStrings) {
+            val enumAsString = unpacker.unpackString()
+            // TODO if the enum comes as string
+            return 0
+        } else {
+            unpacker.unpackInt()
+        }.apply {
+            logger.log("decodeEnum: $this")
+        }
     }
 
     override fun decodeFloat(): Float {
@@ -76,14 +81,13 @@ internal class MessagePackDecoder(
     }
 
     override fun decodeNotNullMark(): Boolean {
-        return unpacker.tryUnpackNil().apply {
+        return !unpacker.tryUnpackNil().apply {
             logger.log("decodeNotNullMark: $this")
         }
     }
 
     override fun decodeNull(): Nothing? {
         logger.log("decodeNull")
-        unpacker.unpackNil()
         return null
     }
 

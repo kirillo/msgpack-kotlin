@@ -1,10 +1,10 @@
 package com.evnmo.msgpack
 
-import com.evnmo.msgpack.NullablePrimitives
-import com.evnmo.msgpack.Primitives
+import com.fasterxml.jackson.annotation.JsonFormat
+import kotlinx.serialization.Serializable
 import org.junit.Test
 
-class BaseTestPrimitives : BaseTest() {
+class TestPrimitives : BaseTest() {
 
     @Test
     fun testPrimitives() {
@@ -56,4 +56,39 @@ class BaseTestPrimitives : BaseTest() {
         )
         runTest(original, NullablePrimitives::class)
     }
+
+}
+
+@Serializable
+@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+private data class Primitives(
+    val string: String,
+    val int: Int,
+    val bool: Boolean,
+    val long: Long,
+    val double: Double,
+    val float: Float,
+    val byte: Byte,
+    val char: Char,
+    val short: Short,
+    val enum: TestEnum
+)
+
+@Serializable
+@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+private data class NullablePrimitives(
+    val string: String?,
+    val int: Int?,
+    val bool: Boolean?,
+    val long: Long?,
+    val double: Double?,
+    val float: Float?,
+    val byte: Byte?,
+    val char: Char?,
+    val short: Short?,
+    val enum: TestEnum?
+)
+
+private enum class TestEnum {
+    Enum1, Enum2
 }

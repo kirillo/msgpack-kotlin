@@ -87,8 +87,8 @@ internal class MessagePackCompositeDecoder(
         deserializer: DeserializationStrategy<T?>,
         previousValue: T?
     ): T? {
-        logger.log("decodeNullableSerializableElement")
         return if (unpacker.tryUnpackNil()) {
+            logger.log("decodeNullableSerializableElement: null")
             null
         } else {
             decodeSerializableElement(descriptor, index, deserializer, previousValue)
@@ -101,7 +101,6 @@ internal class MessagePackCompositeDecoder(
         deserializer: DeserializationStrategy<T>,
         previousValue: T?
     ): T {
-        logger.log("decodeSerializableElement")
         return deserializer.deserialize(MessagePackDecoder(unpacker, configuration))
     }
 
@@ -113,12 +112,15 @@ internal class MessagePackCompositeDecoder(
         return when (descriptor.kind) {
             is StructureKind.LIST -> {
                 if (descriptor.getElementDescriptor(0).kind == PrimitiveKind.BYTE) {
+                    logger.log("decodeCollectionSize: binary")
                     unpacker.unpackBinaryHeader()
                 } else {
+                    logger.log("decodeCollectionSize: list")
                     unpacker.unpackArrayHeader()
                 }
             }
             is StructureKind.MAP -> {
+                logger.log("decodeCollectionSize: map")
                 unpacker.unpackMapHeader()
             }
             else -> -1

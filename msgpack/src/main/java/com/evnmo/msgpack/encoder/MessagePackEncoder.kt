@@ -21,8 +21,8 @@ internal class MessagePackEncoder(
     override val serializersModule = configuration.serializersModule
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
-        logger.log("beginStructure")
         if (descriptor.kind == StructureKind.CLASS) {
+            logger.log("beginStructure: class")
             packer.packArrayHeader(descriptor.elementsCount)
         }
         return MessagePackCompositeEncoder(packer, configuration)
@@ -94,15 +94,16 @@ internal class MessagePackEncoder(
     ): CompositeEncoder {
         when (descriptor.kind) {
             is StructureKind.LIST -> {
-                logger.log("start of list, size = $collectionSize")
                 if (descriptor.getElementDescriptor(0).kind == PrimitiveKind.BYTE) {
+                    logger.log("beginCollection: binary, size: $collectionSize")
                     packer.packBinaryHeader(collectionSize)
                 } else {
+                    logger.log("beginCollection: list, size: $collectionSize")
                     packer.packArrayHeader(collectionSize)
                 }
             }
             is StructureKind.MAP -> {
-                logger.log("start of map, size = $collectionSize")
+                logger.log("beginCollection: map, size: $collectionSize")
                 packer.packMapHeader(collectionSize)
             }
         }

@@ -20,9 +20,10 @@ internal class MessagePackDecoder(
     override val serializersModule = configuration.serializersModule
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
-        logger.log("beginStructure")
-        if (descriptor.kind == StructureKind.CLASS)
+        if (descriptor.kind == StructureKind.CLASS) {
+            logger.log("beginStructure: class")
             unpacker.unpackArrayHeader()
+        }
         return MessagePackCompositeDecoder(unpacker, configuration)
     }
 
@@ -82,7 +83,7 @@ internal class MessagePackDecoder(
 
     override fun decodeNotNullMark(): Boolean {
         return !unpacker.tryUnpackNil().apply {
-            logger.log("decodeNotNullMark: $this")
+            logger.log("decodeNotNullMark: ${!this}")
         }
     }
 

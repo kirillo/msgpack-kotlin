@@ -70,7 +70,7 @@ internal class MessagePackCompositeEncoder(
         value: T?
     ) {
         if (value == null) {
-            logger.log("encodeNullableSerializableElement")
+            logger.log("encodeNullableSerializableElement: null")
             packer.packNil()
         } else {
             encodeSerializableElement(descriptor, index, serializer, value)

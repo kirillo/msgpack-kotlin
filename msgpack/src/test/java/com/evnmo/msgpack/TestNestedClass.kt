@@ -1,5 +1,7 @@
 package com.evnmo.msgpack
 
+import com.fasterxml.jackson.annotation.JsonFormat
+import kotlinx.serialization.Serializable
 import org.junit.Test
 
 class TestNestedClass : BaseTest() {
@@ -8,7 +10,7 @@ class TestNestedClass : BaseTest() {
     fun testNestedClass() {
         val original = NestedClass(
             innerClass = InnerClass(
-                anEnum = TestEnum.Enum2,
+                string = "someString",
                 double = 9.9
             )
         )
@@ -19,7 +21,7 @@ class TestNestedClass : BaseTest() {
     fun testNullableNestedClassWithoutNulls() {
         val original = NullableNestedClass(
             innerClass = InnerClass(
-                anEnum = TestEnum.Enum2,
+                string = "someString",
                 double = 9.9
             )
         )
@@ -33,4 +35,24 @@ class TestNestedClass : BaseTest() {
         )
         runTest(original, NullableNestedClass::class)
     }
+
 }
+
+@Serializable
+@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+private data class NestedClass(
+    val innerClass: InnerClass
+)
+
+@Serializable
+@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+private data class NullableNestedClass(
+    val innerClass: InnerClass?
+)
+
+@Serializable
+@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+private data class InnerClass(
+    val string: String,
+    val double: Double
+)

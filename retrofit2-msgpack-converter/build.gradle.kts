@@ -1,5 +1,6 @@
 plugins {
     id("maven")
+    id("maven-publish")
     id("kotlin")
     kotlin("plugin.serialization") version Versions.kotlin
 }
@@ -14,8 +15,7 @@ kotlin {
 }
 
 dependencies {
-//    implementation(project(":msgpack-serializer"))
-    implementation("com.github.kirillo.msgpack-kotlinx-serialization:msgpack-serializer:0.2")
+    implementation("com.github.kirillo.msgpack-kotlinx-serialization:msgpack-serializer:0.3")
 
     implementation(Libs.Retrofit.retrofit)
     implementation(Libs.Kotlin.serialization_core)

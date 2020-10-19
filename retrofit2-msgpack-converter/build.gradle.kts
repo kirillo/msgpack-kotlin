@@ -14,7 +14,9 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":msgpack-serializer"))
+//    implementation(project(":msgpack-serializer"))
+    implementation("com.github.kirillo.msgpack-kotlinx-serialization:msgpack-serializer:0.2")
+
     implementation(Libs.Retrofit.retrofit)
     implementation(Libs.Kotlin.serialization_core)
 

@@ -9,6 +9,7 @@ object Libs {
 
     object Kotlin {
         const val serialization_core = "org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0"
+        const val serialization_json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0"
     }
 
     object MessagePack {
@@ -21,7 +22,8 @@ object Libs {
 
     object Retrofit {
         const val retrofit = "com.squareup.retrofit2:retrofit:2.9.0"
-        const val mockServer = "com.squareup.okhttp3:mockwebserver:3.14.9"
+        const val okhttp = "com.squareup.okhttp3:okhttp:4.9.0"
+        const val mockServer = "com.squareup.okhttp3:mockwebserver:4.9.0"
     }
 
     object Test {

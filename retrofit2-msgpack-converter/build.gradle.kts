@@ -18,7 +18,9 @@ dependencies {
     implementation(Libs.Evnmo.msgpack_serializer)
 
     implementation(Libs.Retrofit.retrofit)
+    implementation(Libs.Retrofit.okhttp)
     implementation(Libs.Kotlin.serialization_core)
+    implementation(Libs.Kotlin.serialization_json)
 
     testImplementation(Libs.Test.jUnit)
     testImplementation(Libs.Retrofit.mockServer)

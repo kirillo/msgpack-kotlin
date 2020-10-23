@@ -15,7 +15,7 @@ kotlin {
 }
 
 dependencies {
-    implementation("msgpack-kotlin:msgpack-serializer:0.1")
+    implementation(Libs.Evnmo.msgpack_serializer)
 
     implementation(Libs.Retrofit.retrofit)
     implementation(Libs.Kotlin.serialization_core)
@@ -24,4 +24,5 @@ dependencies {
     testImplementation(Libs.Retrofit.mockServer)
 }
 
+group = "com.evnmo"
 version = 0.1

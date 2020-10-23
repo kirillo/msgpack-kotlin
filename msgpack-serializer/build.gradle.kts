@@ -20,8 +20,9 @@ dependencies {
     implementation(Libs.MessagePack.core)
 
     testImplementation(Libs.MessagePack.jackson)
-    testImplementation(Libs.MessagePack.kotlin)
+    testImplementation(Libs.MessagePack.jackson_kotlin_module)
     testImplementation(Libs.Test.jUnit)
 }
 
+group = "com.evnmo"
 version = 0.1

@@ -23,3 +23,5 @@ dependencies {
     testImplementation(Libs.MessagePack.kotlin)
     testImplementation(Libs.Test.jUnit)
 }
+
+version = 0.1

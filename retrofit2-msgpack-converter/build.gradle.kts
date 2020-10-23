@@ -15,7 +15,7 @@ kotlin {
 }
 
 dependencies {
-    implementation("com.github.kirillo.msgpack-kotlinx-serialization:msgpack-serializer:0.3")
+    implementation("msgpack-kotlin:msgpack-serializer:0.1")
 
     implementation(Libs.Retrofit.retrofit)
     implementation(Libs.Kotlin.serialization_core)
@@ -24,3 +24,4 @@ dependencies {
     testImplementation(Libs.Retrofit.mockServer)
 }
 
+version = 0.1

@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 buildscript {
     repositories {
         mavenLocal()

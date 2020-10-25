@@ -13,6 +13,10 @@ import retrofit2.Retrofit
 
 internal class MessagePackConverterTest : BaseTest() {
 
+    private val messagePack = MessagePack {
+        useDebugLogging = true
+    }
+
     @Before
     fun setUp() {
         val retrofit = Retrofit.Builder()
@@ -29,7 +33,7 @@ internal class MessagePackConverterTest : BaseTest() {
         service.serialize(Laptop()).execute()
 
         val actualRequest = server.takeRequest()
-        val expectedRequest = MessagePack.Default.encodeToByteArray(Laptop())
+        val expectedRequest = messagePack.encodeToByteArray(Laptop())
 
         assertArrayEquals(expectedRequest, actualRequest.body.readByteArray())
         assertEquals("application/x-msgpack", actualRequest.headers["Content-Type"])
@@ -37,7 +41,7 @@ internal class MessagePackConverterTest : BaseTest() {
 
     @Test
     fun deserialize() {
-        val mockResponse = MessagePack.Default.encodeToByteArray(Laptop())
+        val mockResponse = messagePack.encodeToByteArray(Laptop())
 
         server.enqueue(MockResponse().setBody(Buffer().write(mockResponse)))
 

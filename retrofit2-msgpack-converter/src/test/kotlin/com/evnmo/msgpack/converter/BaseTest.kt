@@ -25,7 +25,7 @@ internal abstract class BaseTest {
 
     @Serializable
     protected data class Laptop(
-        val name: String = "Macbook",
+        val name: String = "MacBook",
         val inches: Int = 13,
         val installedApps: List<String> = listOf("Safari", "Mail")
     )

@@ -7,6 +7,6 @@ import kotlinx.serialization.modules.SerializersModule
 @ExperimentalSerializationApi
 public data class MessagePackConf(
     @JvmField val encodeEnumsAsStrings: Boolean = false,
-    @JvmField val useDebugLogging: Boolean = true,
+    @JvmField val useDebugLogging: Boolean = false,
     @JvmField val serializersModule: SerializersModule = EmptySerializersModule
 )

@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 import org.junit.Test
 
 internal class TestPrimitives : BaseTest() {
-
     @Test
     fun testPrimitives() {
         val original = Primitives(
@@ -87,6 +86,7 @@ internal class TestPrimitives : BaseTest() {
         val enum: TestEnum?
     )
 
+    @Suppress("unused")
     private enum class TestEnum {
         Enum1, Enum2
     }

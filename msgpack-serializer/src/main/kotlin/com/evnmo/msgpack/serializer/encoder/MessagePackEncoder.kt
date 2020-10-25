@@ -107,6 +107,8 @@ internal class MessagePackEncoder(
                 logger.log("beginCollection: map, size: $collectionSize")
                 packer.packMapHeader(collectionSize)
             }
+            else -> logger.log("UNEXPECTED COLLECTION TYPE: ${descriptor.kind}")
+
         }
         return MessagePackCompositeEncoder(packer, configuration)
     }

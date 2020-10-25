@@ -14,11 +14,14 @@ internal abstract class BaseTest {
 
     protected fun <T> runTest(testData: T, clazz: KClass<*>, config: MessagePackConf? = null) {
 
-        val messagePack = if (config == null) {
-            MessagePack.Default
-        } else {
-            MessagePack(config)
+        val messagePack = MessagePack {
+            config?.encodeEnumsAsStrings?.let {
+                encodeEnumsAsStrings = it
+            }
+
+            useDebugLogging = true
         }
+
         val jackson = ObjectMapper(MessagePackFactory()).registerKotlinModule()
         if (!messagePack.configuration.encodeEnumsAsStrings) {
             jackson.enable(SerializationFeature.WRITE_ENUMS_USING_INDEX)

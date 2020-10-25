@@ -40,3 +40,43 @@ public open class MessagePack(public val configuration: MessagePackConf) : Binar
         return packer.toByteArray()
     }
 }
+
+@Suppress("FunctionName")
+public fun MessagePack(
+    from: MessagePack = MessagePack.Default,
+    builderAction: MessagePackBuilder.() -> Unit
+): MessagePack {
+    val builder = MessagePackBuilder(from.configuration)
+    builder.builderAction()
+    val conf = builder.build()
+    return MessagePack(conf)
+}
+
+/**
+ * Builder of the [MessagePack] instance provided by `MessagePack { ... }` factory function.
+ */
+@Suppress("MemberVisibilityCanBePrivate")
+public class MessagePackBuilder internal constructor(conf: MessagePackConf) {
+    /**
+     * Encode the enums as Strings, otherwise encode them as an index
+     */
+    public var encodeEnumsAsStrings: Boolean = conf.encodeEnumsAsStrings
+
+    /**
+     * Write information about detailed object structure to the log to detect serialization errors
+     */
+    public var useDebugLogging: Boolean = conf.useDebugLogging
+
+    /**
+     * Module with contextual and polymorphic serializers to be used in the resulting [MessagePack] instance.
+     */
+    public var serializersModule: SerializersModule = conf.serializersModule
+
+    internal fun build(): MessagePackConf {
+        return MessagePackConf(
+            encodeEnumsAsStrings = encodeEnumsAsStrings,
+            useDebugLogging = useDebugLogging,
+            serializersModule = serializersModule
+        )
+    }
+}

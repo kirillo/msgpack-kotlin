@@ -10,12 +10,12 @@ import retrofit2.Converter
 
 internal class MsgPackRequestBodyConverter<T>(
     private val messagePack: MessagePack,
-    private val strategy: SerializationStrategy<T>
+    private val serializer: SerializationStrategy<T>
 ) : Converter<T, RequestBody> {
     private val mediaType = "application/x-msgpack".toMediaType()
 
     override fun convert(value: T): RequestBody? {
-        val bytes = messagePack.encodeToByteArray(strategy, value)
+        val bytes = messagePack.encodeToByteArray(serializer, value)
         return bytes.toRequestBody(mediaType)
     }
 }

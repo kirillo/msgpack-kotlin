@@ -1,8 +1,6 @@
 package com.evnmo.msgpack.converter
 
-import com.evnmo.msgpack.serializer.MessagePack
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -11,26 +9,25 @@ import retrofit2.Retrofit
 import java.lang.reflect.Type
 
 @ExperimentalSerializationApi
-public class MessagePackConverterFactory(private val strategy: Strategy) : Converter.Factory() {
-
-    private val messagePack = MessagePack.Default
-    private val json = Json {
-        encodeDefaults = true
-    }
+public class MessagePackConverterFactory(
+    private val serializationStrategy: Strategy = Strategy.AsMessagePack(),
+    private val deserializationStrategy: Strategy = Strategy.AsMessagePack()
+) : Converter.Factory() {
 
     override fun responseBodyConverter(
         type: Type,
         annotations: Array<Annotation>,
         retrofit: Retrofit
     ): Converter<ResponseBody, *>? {
-        return when (strategy) {
-            Strategy.Json -> {
+        return when (deserializationStrategy) {
+            is Strategy.AsJson -> {
                 val serializer = serializer(type)
-                JsonResponseBodyConverter(json, serializer)
+                JsonResponseBodyConverter(deserializationStrategy.json, serializer)
             }
-            Strategy.MessagePack -> {
-                val strategy = messagePack.serializersModule.serializer(type)
-                MsgPackResponseBodyConverter(messagePack, strategy)
+            is Strategy.AsMessagePack -> {
+                val serializer =
+                    deserializationStrategy.messagePack.serializersModule.serializer(type)
+                MsgPackResponseBodyConverter(deserializationStrategy.messagePack, serializer)
             }
         }
     }
@@ -41,14 +38,15 @@ public class MessagePackConverterFactory(private val strategy: Strategy) : Conve
         methodAnnotations: Array<Annotation>,
         retrofit: Retrofit
     ): Converter<*, RequestBody>? {
-        return when (strategy) {
-            Strategy.Json -> {
-                val saver = serializer(type)
-                JsonRequestBodyConverter(json, saver)
+        return when (serializationStrategy) {
+            is Strategy.AsJson -> {
+                val serializer = serializer(type)
+                JsonRequestBodyConverter(serializationStrategy.json, serializer)
             }
-            Strategy.MessagePack -> {
-                val strategy = messagePack.serializersModule.serializer(type)
-                MsgPackRequestBodyConverter(messagePack, strategy)
+            is Strategy.AsMessagePack -> {
+                val serializer =
+                    serializationStrategy.messagePack.serializersModule.serializer(type)
+                MsgPackRequestBodyConverter(serializationStrategy.messagePack, serializer)
             }
         }
     }

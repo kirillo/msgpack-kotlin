@@ -3,16 +3,21 @@ package com.evnmo.msgpack.converter
 
 import com.evnmo.msgpack.serializer.MessagePack
 import kotlinx.serialization.encodeToByteArray
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import okhttp3.mockwebserver.MockResponse
 import okio.Buffer
-import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
 
-internal class MessagePackConverterTest : BaseTest() {
+internal class MixedConverterTest : BaseTest() {
 
+    private val json = Json {
+        ignoreUnknownKeys = true
+        encodeDefaults = true
+    }
     private val messagePack = MessagePack {
         useDebugLogging = true
     }
@@ -23,7 +28,7 @@ internal class MessagePackConverterTest : BaseTest() {
             .baseUrl(server.url("/"))
             .addConverterFactory(
                 MessagePackConverterFactory(
-                    serializationStrategy = Strategy.AsMessagePack(messagePack),
+                    serializationStrategy = Strategy.AsJson(json),
                     deserializationStrategy = Strategy.AsMessagePack(messagePack)
                 )
             )
@@ -38,10 +43,10 @@ internal class MessagePackConverterTest : BaseTest() {
         service.serialize(Laptop()).execute()
 
         val actualRequest = server.takeRequest()
-        val expectedRequest = messagePack.encodeToByteArray(Laptop())
+        val expectedRequest = json.encodeToString(Laptop())
 
-        assertArrayEquals(expectedRequest, actualRequest.body.readByteArray())
-        assertEquals("application/x-msgpack", actualRequest.headers["Content-Type"])
+        assertEquals(expectedRequest, actualRequest.body.readUtf8())
+        assertEquals("application/json; charset=utf-8", actualRequest.headers["Content-Type"])
     }
 
     @Test

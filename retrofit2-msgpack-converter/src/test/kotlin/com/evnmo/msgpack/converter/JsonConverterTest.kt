@@ -20,7 +20,12 @@ internal class JsonConverterTest : BaseTest() {
     fun setUp() {
         val retrofit = Retrofit.Builder()
             .baseUrl(server.url("/"))
-            .addConverterFactory(MessagePackConverterFactory(Strategy.Json))
+            .addConverterFactory(
+                MessagePackConverterFactory(
+                    serializationStrategy = Strategy.AsJson(json),
+                    deserializationStrategy = Strategy.AsJson(json)
+                )
+            )
             .build()
         service = retrofit.create(Service::class.java)
     }

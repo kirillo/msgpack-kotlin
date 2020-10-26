@@ -6,7 +6,7 @@ object Versions {
 
 object Libs {
     object Evnmo {
-        const val msgpack_serializer = "com.evnmo:msgpack-serializer:0.1"
+        const val msgpack_serializer = "com.evnmo:msgpack-serializer:0.4"
     }
 
     object Kotlin {

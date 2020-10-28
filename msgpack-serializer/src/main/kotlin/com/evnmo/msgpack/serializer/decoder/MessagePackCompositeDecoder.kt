@@ -1,5 +1,6 @@
 package com.evnmo.msgpack.serializer.decoder
 
+import com.evnmo.msgpack.serializer.DateSerializer
 import com.evnmo.msgpack.serializer.Logger
 import com.evnmo.msgpack.serializer.MessagePackConf
 import kotlinx.serialization.DeserializationStrategy
@@ -9,6 +10,8 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.encoding.CompositeDecoder
 import org.msgpack.core.MessageUnpacker
+import java.nio.ByteBuffer
+import java.util.*
 
 @ExperimentalSerializationApi
 internal class MessagePackCompositeDecoder(
@@ -101,7 +104,15 @@ internal class MessagePackCompositeDecoder(
         deserializer: DeserializationStrategy<T>,
         previousValue: T?
     ): T {
-        return deserializer.deserialize(MessagePackDecoder(unpacker, configuration))
+        return if (descriptor.serialName == DateSerializer.descriptor.serialName) {
+            logger.log("decodeDate")
+            val byteArray = unpacker.readPayload(DateSerializer.DATE_LENGTH)
+            val byteBuffer = ByteBuffer.wrap(byteArray)
+            val unixSeconds = byteBuffer.int
+            return Date(unixSeconds * 1000L) as T
+        } else {
+            deserializer.deserialize(MessagePackDecoder(unpacker, configuration))
+        }
     }
 
     override fun endStructure(descriptor: SerialDescriptor) {

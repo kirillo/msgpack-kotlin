@@ -1,5 +1,6 @@
 package com.evnmo.msgpack.serializer.encoder
 
+import com.evnmo.msgpack.serializer.DateSerializer
 import com.evnmo.msgpack.serializer.Logger
 import com.evnmo.msgpack.serializer.MessagePackConf
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -22,8 +23,13 @@ internal class MessagePackEncoder(
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
         if (descriptor.kind == StructureKind.CLASS) {
-            logger.log("beginStructure: class")
-            packer.packArrayHeader(descriptor.elementsCount)
+            if (descriptor.serialName == DateSerializer.descriptor.serialName) {
+                logger.log("beginStructure: date")
+                packer.packExtensionTypeHeader(-1, DateSerializer.DATE_LENGTH)
+            } else {
+                logger.log("beginStructure: class")
+                packer.packArrayHeader(descriptor.elementsCount)
+            }
         }
         return MessagePackCompositeEncoder(packer, configuration)
     }
